@@ -4,19 +4,19 @@ public class Matrix<T>
 {
     private T[,] t;
 
-    //intialize with table
+    //initialize with table
     public Matrix(T[,] table)
     {
         t = table;
     }
 
-    //initalize empty
+    //initialize empty
     public Matrix(int r, int c)
     {
         t = new T[r, c];
     }
 
-    //martix multiplication
+    //matrix multiplication
     public static Matrix<T> operator *(Matrix<T> A, Matrix<T> B)
     {
         if (A.t.GetLength(1) != B.t.GetLength(0))
@@ -52,7 +52,14 @@ public class Matrix<T>
         {
             for (int j = 0; j < A.t.GetLength(1); j++)
             {
-                res.t[i, j] = (dynamic)A.t[i, j] * b;
+                try
+                {
+                    res.t[i, j] = (dynamic)A.t[i, j] * b;
+                }
+                catch (Exception)
+                {
+                    throw ScalarMultiplicationException();
+                }
             }
         }
 
@@ -96,5 +103,10 @@ public class Matrix<T>
     private static Exception MatrixMultiplicationException(int b, int c)
     {
         return new Exception("Matrix multiplication is only possible for axb and bxc matrices. Given column length of first matrix = " + b + ", row length of second matrix = " + c);
+    }
+
+    private static Exception ScalarMultiplicationException()
+    {
+        return new Exception("Cannot multiply matrix of type " + typeof(T) + " with a scalar value");
     }
 }
